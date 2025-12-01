@@ -1,0 +1,30 @@
+/* client/src/style.css */
+:root {
+  /* 主题色：修改这里，全站变色 */
+  --el-color-primary: #409eff;
+  --zero-bg-color: #f5f7fa;
+  --zero-text-main: #303133;
+  --zero-text-secondary: #909399;
+  
+  /* 布局尺寸 */
+  --zero-container-width: 1200px;
+}
+
+body {
+  margin: 0;
+  background-color: var(--zero-bg-color);
+  color: var(--zero-text-main);
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+}
+
+/* 通用工具类 */
+.container {
+  width: var(--zero-container-width);
+  margin: 0 auto; /* 居中 */
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

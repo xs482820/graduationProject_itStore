@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement()) // 自增主键
+  email     String   @unique                       // 邮箱，必须唯一
+  password  String                                 // 密码
+  nickname  String?                                // 昵称，可以为空(?表示可选)
+  avatar    String?                                // 头像URL
+  role      String   @default("user")              // 角色：user/admin
+  createdAt DateTime @default(now())               // 创建时间
+  updatedAt DateTime @updatedAt                    // 更新时间
+  cartItems CartItem[]                             // 用户购物车物品
+  orders    Order[]                                // 用户所有订单
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   // 商品名称
+  description String?  @db.Text // 描述 (Text类型可以存长文)
+  price       Decimal  @db.Decimal(10, 2) // 价格 (10位数字，2位小数)
+  stock       Int      @default(0) // 库存
+  cover       String?  // 封面图片URL
+  category    String   @default("general") // 分类
+  isOnSale    Boolean  @default(true) // 是否上架
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  cartItems   CartItem[] //购物车记录
+  orderItems  OrderItem[] // 该商品关联的订单详情
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int      @default(1) // 买了几个
+  
+  // 关联用户 (谁的车)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  
+  // 关联商品 (啥东西)
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 联合唯一索引：同一个用户对同一个商品，只能有一条记录 (数量累加)
+  @@unique([userId, productId])
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  status      String   @default("pending") // pending(待支付), paid(已支付)
+  totalAmount Decimal  @db.Decimal(10, 2)  // 订单总金额
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items       OrderItem[] // 订单包含的商品快照
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  
+  name      String  // 存一份当时的商品名快照
+  price     Decimal @db.Decimal(10, 2) // 存一份当时的单价快照！重要！
+  quantity  Int
+}
