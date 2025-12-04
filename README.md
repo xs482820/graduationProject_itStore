@@ -64,9 +64,10 @@
 ```bash
 git clone https://github.com/xs482820/graduationProject_itStore.git
 cd graduationProject_itStore
-2. 后端设置 (Server)
-code
-Bash
+```
+
+### 2. 后端设置 (Server)
+```bash
 cd server
 
 # 安装依赖
@@ -86,9 +87,10 @@ npx ts-node prisma/seed.ts
 
 # 启动开发服务器 (默认端口 3000)
 npm run dev
-3. 前端设置 (Client)
-code
-Bash
+```
+
+## 3. 前端设置 (Client)
+```bash
 cd client
 
 # 安装依赖
@@ -96,10 +98,12 @@ npm install
 
 # 启动前端 (默认端口 5173)
 npm run dev
+
 访问 http://localhost:5173 即可看到项目。
+```
+
 📂 项目结构 (Structure)
-code
-Text
+```text
 graduationProject_itStore/
 ├── client/                 # 前端工程
 │   ├── src/
@@ -115,6 +119,8 @@ graduationProject_itStore/
 │   │   ├── routes/         # 路由定义
 │   │   ├── middlewares/    # 中间件 (Auth)
 │   │   └── app.ts          # 入口文件
+```
+
 ⚠️ 局限性与反思 (Limitations)
 作为一个学习性质的项目，本项目在以下方面做了简化处理（Technical Trade-offs）：
 图片存储：为了演示方便，未接入 OSS 对象存储，直接使用了本地静态资源或外部链接。
