@@ -122,7 +122,7 @@ graduationProject_itStore/
 ```
 
 ⚠️ 局限性与反思 (Limitations)
-作为一个学习性质的项目，本项目在以下方面做了简化处理（Technical Trade-offs）：
+作为一个学习性质的项目，本项目在以下方面做了简化处理（Technical Trade-offs）:
 图片存储：为了演示方便，未接入 OSS 对象存储，直接使用了本地静态资源或外部链接。
 支付逻辑：移除了第三方支付网关对接，采用“点击即支付”的沙箱模拟逻辑。
 安全性：虽然实现了 BCrypt 加密和 JWT 校验，但缺乏由 HTTPS、Rate Limiting、CSRF 防护等构成的完整安全纵深。
