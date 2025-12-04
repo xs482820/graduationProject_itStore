@@ -68,12 +68,13 @@ const handleLogin = async () => {
     isLoading.value = true;
     const res: any = await loginAPI(loginForm);
     
-    ElMessage.success('登录成功！');
-    
-    // 存储 Token
-    localStorage.setItem('token', res.token); 
-    localStorage.setItem('nickname', res.user.nickname || '用户'); 
-    // 存储用户信息(可选，方便展示名字)
+    console.log('登录成功，后端返回:', res);
+    ElMessage.success('登录成功！欢迎回来');
+    // 存储 token 和昵称
+    localStorage.setItem('token', res.token);
+    localStorage.setItem('nickname', res.user.nickname || '用户');
+    localStorage.setItem('role', res.user.role); // 存储角色
+    // 存储用户信息
     if(res.user) {
       localStorage.setItem('userInfo', JSON.stringify(res.user));
     }

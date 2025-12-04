@@ -3,7 +3,6 @@ import MainLayout from '../layout/MainLayout.vue';
 import Login from '../views/Login.vue';
 import Home from '../views/Home.vue';
 import Cart from '../views/Cart.vue';
-import Orders from '../views/Orders.vue';
 import Register from '../views/Register.vue';
 import ProductDetail from '../views/ProductDetail.vue';
 
@@ -22,11 +21,6 @@ const routes = [
     path: '/cart',
     name: 'Cart',
     component: Cart
-  },
-  {
-    path: '/orders',
-    name: 'Orders',
-    component: Orders
   },
   {
     path: '/register',

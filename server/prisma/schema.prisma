@@ -32,7 +32,7 @@ model Product {
   description String?  @db.Text // 描述 (Text类型可以存长文)
   price       Decimal  @db.Decimal(10, 2) // 价格 (10位数字，2位小数)
   stock       Int      @default(0) // 库存
-  cover       String?  // 封面图片URL
+  cover       String?  @db.Text  // 封面图片URL
   category    String   @default("general") // 分类
   isOnSale    Boolean  @default(true) // 是否上架
   createdAt   DateTime @default(now())
