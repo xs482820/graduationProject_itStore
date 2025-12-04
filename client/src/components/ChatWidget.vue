@@ -63,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { ref, nextTick } from 'vue';
 import { Comment, Close } from '@element-plus/icons-vue';
 import { chatAPI } from '../api/ai';
@@ -72,6 +73,7 @@ interface Message {
   content: string;
 }
 
+const route = useRoute();
 const isOpen = ref(false);
 const isLoading = ref(false);
 const inputText = ref('');
@@ -101,8 +103,14 @@ const handleSend = async () => {
   // 2. 请求 AI
   isLoading.value = true;
   try {
-    const res: any = await chatAPI(text);
-    // 3. 推入 AI 回复
+    // 检查当前路由是不是详情页 (ProductDetail)
+    let currentId: number | undefined = undefined;
+    // 注意：这里 route.name 要和你 router/index.ts 里定义的一致
+    if (route.name === 'ProductDetail' && route.params.id) {
+      currentId = Number(route.params.id);
+    }
+    // 把 currentId 传进去
+    const res: any = await chatAPI(text, currentId);
     messages.value.push({ role: 'ai', content: res.reply });
   } catch (error) {
     messages.value.push({ role: 'ai', content: '我累了，连不上服务器...' });

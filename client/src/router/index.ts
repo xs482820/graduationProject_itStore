@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import MainLayout from '../layout/MainLayout.vue'; 
 import Login from '../views/Login.vue';
 import Home from '../views/Home.vue';
 import Cart from '../views/Cart.vue';
 import Orders from '../views/Orders.vue';
 import Register from '../views/Register.vue';
+import ProductDetail from '../views/ProductDetail.vue';
 
 const routes = [
   {
@@ -22,15 +24,24 @@ const routes = [
     component: Cart
   },
   {
-  path: '/orders',
-  name: 'Orders',
-  component: Orders
+    path: '/orders',
+    name: 'Orders',
+    component: Orders
   },
   {
     path: '/register',
     name: 'Register',
     component: Register
-  }
+  },
+  {
+    path: '/',
+    component: MainLayout,
+    children: [
+      { path: '', name: 'Home', component: Home },
+      // 新增这一行：动态路由，:id 会匹配 url 里的数字
+      { path: 'product/:id', name: 'ProductDetail', component: ProductDetail } 
+    ]
+  },
 ];
 
 const router = createRouter({

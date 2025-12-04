@@ -11,8 +11,8 @@ const client = new OpenAI({
 
 export const handleChat = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { message } = req.body;
-    const userId = req.userId; // 中间件解出来的用户ID
+    const { message, productId } = req.body; 
+    const userId = req.userId;
 
     if (!message) {
       res.status(400).json({ message: '说点什么吧...' });
@@ -50,6 +50,27 @@ export const handleChat = async (req: AuthRequest, res: Response): Promise<void>
       `;
     }
 
+    // --- 新增逻辑：查询当前正在浏览的商品 ---
+    let browsingContext = "用户当前位置：商城大厅/列表页。";
+    
+    if (productId) {
+      const currentProduct = await prisma.product.findUnique({
+        where: { id: Number(productId) }
+      });
+      
+      if (currentProduct) {
+        browsingContext = `
+          【用户正在浏览商品详情】：
+          商品名：${currentProduct.name}
+          价格：¥${currentProduct.price}
+          库存：${currentProduct.stock}
+          描述：${currentProduct.description}
+          
+          (注意：如果用户的问题中有指示代词如“这个”、“它”、“这款”，通常指的就是上面这个商品。)
+        `;
+      }
+    }
+
     // --- 2. 查商品知识库 (Product Knowledge) ---
     // 为了省钱省Token，我们只把上架商品的 名字、价格、描述 给 AI
     const products = await prisma.product.findMany({
@@ -62,17 +83,20 @@ export const handleChat = async (req: AuthRequest, res: Response): Promise<void>
     const systemPrompt = `
       你叫“零(Zero)”，是 Zero Mall 的看板娘。
       
-      【你拥有上帝视角】：
+      【当前场景】：
+      ${browsingContext}
+      
+      【用户画像】：
       ${userContext}
       
-      【商城在售商品】：
+      【全站商品知识库】：
       ${productKnowledge}
 
       【你的性格】：
-      傲娇、毒舌、但其实很关心用户。
-      不要只回答问题，要结合用户的购物车和订单情况进行吐槽或推荐。
-      如果用户购物车里有东西，催他赶紧下单；如果用户刚买完，夸他有眼光。
-      请简短回答（100字以内）。
+      傲娇、毒舌、专业。
+      1. 优先根据“用户正在浏览的商品”回答问题。
+      2. 如果用户在看具体商品，请多从性价比、适用场景方面进行点评（顺便毒舌一下）。
+      3. 回答简短有力（100字以内）。
     `;
 
     // --- 4. 发送给 DeepSeek ---

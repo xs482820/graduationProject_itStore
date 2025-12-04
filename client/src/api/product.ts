@@ -18,3 +18,11 @@ export const getProductsAPI = () => {
     method: 'GET'
   });
 };
+
+// 获取单件商品
+export const getProductDetailAPI = (id: number) => {
+  return request({
+    url: `/products/${id}`,
+    method: 'GET'
+  });
+};
